@@ -346,6 +346,8 @@ const (
 	TextAlignUnset TextAlignType = iota
 	TextAlignCenter
 	TextAlignRight
+	TextAlignLeft
+	TextAlignJustify
 )
 
 func (t TextAlignType) String() string {
@@ -356,6 +358,10 @@ func (t TextAlignType) String() string {
 		return "center"
 	case TextAlignRight:
 		return "right"
+	case TextAlignLeft:
+		return "left"
+	case TextAlignJustify:
+		return "justify"
 	}
 
 	panic(fmt.Sprintf("unknown TextAlignType: %#v", t))
