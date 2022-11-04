@@ -909,6 +909,8 @@ func (n *Node) AttrValue(v string) *Node {
 	return n
 }
 
+func (n *Node) AddAttr(a *html.Attribute) *Node { n.Attr = append(n.Attr, a); return n }
+
 // }}}
 
 // Handlers {{{
