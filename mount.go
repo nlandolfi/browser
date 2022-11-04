@@ -92,7 +92,14 @@ func (m *Mounter) create(ref *Node) {
 
 	switch ref.Type {
 	case html.ElementNode:
-		ref.renderedElement = m.Document.CreateElement(ref.DataAtom)
+		var tagName = ref.Data
+		if tagName == "" { // allow only defining the atom
+			tagName = ref.DataAtom.String()
+		}
+		if tagName == "" {
+			panic("trying to mount ElementNode with empty tag name: must define DataAtom or Data (or both)")
+		}
+		ref.renderedElement = m.Document.CreateElement(tagName)
 		ref.rendered = ref.renderedElement
 	case html.TextNode:
 		ref.rendered = m.Document.CreateTextNode(ref.Data)

@@ -5,8 +5,6 @@ package dom
 
 import (
 	"html/template"
-
-	"golang.org/x/net/html/atom"
 )
 
 // Document is an interface for a browser's Document object.
@@ -22,7 +20,7 @@ type Document interface {
 
 	// CreateElement creates a DOM element, as in the javacsript `document.createElement`.
 	// See: https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement.
-	CreateElement(atom.Atom) Element
+	CreateElement(string) Element
 
 	// CreateTextNode creates a DOM texdt node, as in the javascript `document.createTextNode`.
 	// See: https://developer.mozilla.org/en-US/docs/Web/API/Document/createTextNode

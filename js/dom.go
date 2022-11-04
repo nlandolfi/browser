@@ -11,7 +11,6 @@ import (
 
 	"github.com/spinsrv/browser"
 	"github.com/spinsrv/browser/dom"
-	"golang.org/x/net/html/atom"
 )
 
 var (
@@ -67,8 +66,8 @@ func (d *document) GetElementByID(id string) (dom.Element, error) {
 	}, nil
 }
 
-func (d *document) CreateElement(a atom.Atom) dom.Element {
-	u := d.underlying.Call("createElement", a.String())
+func (d *document) CreateElement(tagName string) dom.Element {
+	u := d.underlying.Call("createElement", tagName)
 	return &element{
 		underlying: u,
 	}
