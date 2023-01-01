@@ -731,6 +731,7 @@ func (n *Node) MaxWidth(s Size) *Node         { n.Style.MaxWidth = s; return n }
 func (n *Node) MaxWidthPX(v float64) *Node    { return n.MaxWidth(Size{Value: v, Unit: UnitPX}) }
 func (n *Node) MinHeight(s Size) *Node        { n.Style.MinHeight = s; return n }
 func (n *Node) MinWidth(s Size) *Node         { n.Style.MinWidth = s; return n }
+func (n *Node) MinWidthPX(v float64) *Node    { return n.MinWidth(Size{Value: v, Unit: UnitPX}) }
 func (n *Node) Cursor(t CursorType) *Node     { n.Style.Cursor = t; return n }
 func (n *Node) CursorPointer() *Node          { return n.Cursor(CursorPointer) }
 func (n *Node) CursorMove() *Node             { return n.Cursor(CursorMove) }
