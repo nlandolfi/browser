@@ -734,6 +734,7 @@ func (n *Node) MinWidth(s Size) *Node         { n.Style.MinWidth = s; return n }
 func (n *Node) Cursor(t CursorType) *Node     { n.Style.Cursor = t; return n }
 func (n *Node) CursorPointer() *Node          { return n.Cursor(CursorPointer) }
 func (n *Node) CursorMove() *Node             { return n.Cursor(CursorMove) }
+func (n *Node) Outline(o Outline) *Node       { n.Style.Outline = o; return n }
 func (n *Node) Overflow(t OverflowType) *Node { n.Style.Overflow = t; return n }
 func (n *Node) OverflowHidden() *Node         { return n.Overflow(OverflowHidden) }
 func (n *Node) OverflowScroll() *Node         { return n.Overflow(OverflowScroll) }
