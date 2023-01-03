@@ -10,6 +10,8 @@ import (
 // Document is an interface for a browser's Document object.
 // See: https://developer.mozilla.org/en-US/docs/Web/API/Document.
 type Document interface {
+	EventTarget
+
 	// Body is an interface for the Document's body, as in the javascript `document.body`.
 	// See: https://developer.mozilla.org/en-US/docs/Web/API/Document/body.
 	Body() Element
