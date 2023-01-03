@@ -50,6 +50,10 @@ type document struct {
 	underlying js.Value
 }
 
+func (d *document) ReadyState() string {
+	return d.underlying.Get("readyState").String()
+}
+
 func (d *document) Body() dom.Element {
 	return &element{
 		underlying: d.underlying.Get("body"),

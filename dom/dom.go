@@ -12,6 +12,8 @@ import (
 type Document interface {
 	EventTarget
 
+	ReadyState() string
+
 	// Body is an interface for the Document's body, as in the javascript `document.body`.
 	// See: https://developer.mozilla.org/en-US/docs/Web/API/Document/body.
 	Body() Element
