@@ -85,6 +85,34 @@ func (e *document) Selection() dom.Selection {
 	}
 }
 
+func (d *document) AddEventListener(on dom.EventType, h dom.EventHandler) dom.EventListener {
+	c := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		if len(args) != 1 {
+			log.Printf("about to panic, args: %+v", args)
+			panic("event listener called with more than one argument!")
+		}
+		h(&event{args[0]})
+		return nil
+	})
+
+	el := &eventListener{Func: c}
+	d.underlying.Call("addEventListener", string(on), c)
+
+	return el
+}
+
+func (d *document) RemoveEventListener(on dom.EventType, l dom.EventListener) {
+	if l == nil {
+		panic("can not remove nil event listener")
+	}
+	el, ok := l.(*eventListener)
+	if !ok {
+		panic("bad event listener type")
+	}
+
+	d.underlying.Call("removeEventListener", string(on), el.Func)
+}
+
 type selection struct {
 	underlying js.Value
 }
