@@ -429,53 +429,54 @@ func (o *Outline) String() string {
 }
 
 type Style struct {
-	AlignItems     AlignItemsType
-	Background     string
-	Border         Border
-	BorderBottom   Border
-	BorderColor    string
-	BorderLeft     Border
-	BorderRadius   Size
-	BorderRight    Border
-	BorderTop      Border
-	BoxShadow      BoxShadow
-	Color          string
-	Cursor         CursorType
-	Display        DisplayType
-	FlexBasis      string
-	FlexDirection  FlexDirectionType
-	FlexGrow       string
-	FlexShrink     string
-	FlexWrap       FlexWrapType
-	FontFamily     string
-	FontSize       Size
-	FontWeight     string
-	GridArea       string
-	Height         Size
-	JustifyContent JustifyContentType
-	JustifySelf    JustifySelfType
-	Left           Size
-	Margin         Size
-	MarginBottom   Size
-	MarginLeft     Size
-	MarginRight    Size
-	MarginTop      Size
-	MaxHeight      Size
-	MaxWidth       Size
-	MinHeight      Size
-	MinWidth       Size
-	Outline        Outline
-	Overflow       OverflowType
-	Padding        Size
-	PaddingBottom  Size
-	PaddingLeft    Size
-	PaddingRight   Size
-	PaddingTop     Size
-	Position       PositionType
-	TextAlign      TextAlignType
-	TextDecoration TextDecorationType
-	Top            Size
-	Width          Size
+	AlignItems      AlignItemsType
+	Background      string
+	BackgroundColor string
+	Border          Border
+	BorderBottom    Border
+	BorderColor     string
+	BorderLeft      Border
+	BorderRadius    Size
+	BorderRight     Border
+	BorderTop       Border
+	BoxShadow       BoxShadow
+	Color           string
+	Cursor          CursorType
+	Display         DisplayType
+	FlexBasis       string
+	FlexDirection   FlexDirectionType
+	FlexGrow        string
+	FlexShrink      string
+	FlexWrap        FlexWrapType
+	FontFamily      string
+	FontSize        Size
+	FontWeight      string
+	GridArea        string
+	Height          Size
+	JustifyContent  JustifyContentType
+	JustifySelf     JustifySelfType
+	Left            Size
+	Margin          Size
+	MarginBottom    Size
+	MarginLeft      Size
+	MarginRight     Size
+	MarginTop       Size
+	MaxHeight       Size
+	MaxWidth        Size
+	MinHeight       Size
+	MinWidth        Size
+	Outline         Outline
+	Overflow        OverflowType
+	Padding         Size
+	PaddingBottom   Size
+	PaddingLeft     Size
+	PaddingRight    Size
+	PaddingTop      Size
+	Position        PositionType
+	TextAlign       TextAlignType
+	TextDecoration  TextDecorationType
+	Top             Size
+	Width           Size
 }
 
 func (s *Style) Val() string {
@@ -492,6 +493,10 @@ func (s *Style) Val() string {
 
 	if s.Background != "" {
 		fmt.Fprintf(w, "background:%s;", s.Background)
+	}
+
+	if s.BackgroundColor != "" {
+		fmt.Fprintf(w, "background-color:%s;", s.BackgroundColor)
 	}
 
 	if s.Border.Type != BorderUnset {
@@ -684,6 +689,7 @@ func (s *Style) Val() string {
 func (n *Node) AlignItems(s AlignItemsType) *Node         { n.Style.AlignItems = s; return n }
 func (n *Node) AlignItemsCenter() *Node                   { return n.AlignItems(AlignItemsCenter) }
 func (n *Node) Background(s string) *Node                 { n.Style.Background = s; return n }
+func (n *Node) BackgroundColor(s string) *Node            { n.Style.BackgroundColor = s; return n }
 func (n *Node) Border(b Border) *Node                     { n.Style.Border = b; return n }
 func (n *Node) BorderBottom(b Border) *Node               { n.Style.BorderBottom = b; return n }
 func (n *Node) BorderLeft(b Border) *Node                 { n.Style.BorderLeft = b; return n }
