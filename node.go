@@ -227,16 +227,21 @@ func (t UnitType) String() string {
 }
 
 type Size struct {
-	Value float64
-	Unit  UnitType
+	Value          float64
+	Unit           UnitType
+	StringOverride string // Use for calcs and vars
 }
 
 func (s *Size) IsZero() bool {
-	return s.Value == 0 && s.Unit == UnitUnset
+	return s.Value == 0 && s.Unit == UnitUnset && s.StringOverride == ""
 }
 
 func (s *Size) String() string {
-	return fmt.Sprintf("%f%s", s.Value, s.Unit)
+	if s.StringOverride != "" {
+		return s.StringOverride
+	} else {
+		return fmt.Sprintf("%f%s", s.Value, s.Unit)
+	}
 }
 
 type JustifyContentType int
