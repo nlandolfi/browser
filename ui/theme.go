@@ -234,6 +234,10 @@ func (t *Theme) PassInput(value *string) *browser.Node {
 	return t.TextInput(value).AttrType("password")
 }
 
+func TextNode(s string) *browser.Node {
+	return textNode(s)
+}
+
 func textNode(s string) *browser.Node {
 	return &browser.Node{
 		Type: html.TextNode,
