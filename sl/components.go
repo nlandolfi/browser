@@ -1,3 +1,5 @@
+// Package sl contains *browser.Node helper methods for the
+// Shoelace web component package. See https://shoelace.style
 package sl
 
 import (
