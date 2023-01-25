@@ -58,7 +58,7 @@ const (
 func (t BorderType) String() string {
 	switch t {
 	case BorderUnset:
-		panic("calling String on BorderUnset")
+		return ""
 	case BorderNone:
 		return "none"
 	case BorderSolid:
@@ -207,7 +207,7 @@ const (
 
 func (t UnitType) String() string {
 	switch t {
-	case UnitDefault:
+	case UnitUnset, UnitDefault:
 		return ""
 	case UnitEM:
 		return "em"
