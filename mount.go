@@ -57,9 +57,11 @@ func (m *Mounter) mount(n *Node) error {
 func (m *Mounter) apply(c *change) {
 	switch c.Type {
 	case insert:
+		log.Print("insert")
 		m.create(c.Ref)           // creates the DOM element
 		m.insert(c.Parent, c.Ref) // inserts it
 	case replace:
+		log.Print("replace")
 		m.create(c.Ref) // creates the DOM element
 		// I don't understand how this is better than just mutating the current node? - NCL 1/30/22
 		m.replace(c.Parent, c.Old, c.Ref)
@@ -366,6 +368,9 @@ func reconcileWalker(base dom.Element, oldRoot, newRoot *Node) (changes []*chang
 			//			log.Print("replaced tree")
 			continue
 		}
+
+		// TODO: can this be optimized with 'insert before' / 'insert after'
+		// may then handle common diff cases like adding an alerty box above some other UI
 
 		for i := 0; i < len(old.Children) && i < len(new.Children); i++ {
 			stack = append(stack, &nodePair{
