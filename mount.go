@@ -58,15 +58,17 @@ func (m *Mounter) apply(c *change) {
 	log.Printf("%+v", c)
 	switch c.Type {
 	case insert:
-		log.Print("insert")
-		log.Printf("%+v", c.Parent)
-		log.Printf("%+v", c.Ref)
+		//log.Print("insert")
+		//log.Printf("%+v", c.Parent)
+		//log.Printf("%+v", c.Ref)
 		if c.Ref.rendered == nil { // who knows if this will break things?? - NCL 1/25/23
+			// it seems it is possible to get here and to have an already rendered node,
+			// so let's only create it if it's not yet rendered - NCL 1/25/23
 			m.create(c.Ref) // creates the DOM element
 		}
 		m.insert(c.Parent, c.Ref) // inserts it
 	case replace:
-		log.Print("replace")
+		//log.Print("replace")
 		m.create(c.Ref) // creates the DOM element
 		// I don't understand how this is better than just mutating the current node? - NCL 1/30/22
 		m.replace(c.Parent, c.Old, c.Ref)
