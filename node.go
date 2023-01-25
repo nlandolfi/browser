@@ -285,7 +285,7 @@ const (
 func (t JustifySelfType) String() string {
 	switch t {
 	case JustifySelfUnset:
-		panic("called String on JustifySelfUnset")
+		return ""
 	case JustifySelfRight:
 		return "right"
 	case JustifySelfLeft:
