@@ -39,7 +39,7 @@ const (
 func (t AlignItemsType) String() string {
 	switch t {
 	case AlignItemsUnset:
-		panic("called String on AlignItemsUnset")
+		return ""
 	case AlignItemsCenter:
 		return "center"
 	}
@@ -111,7 +111,7 @@ const (
 func (t CursorType) String() string {
 	switch t {
 	case CursorUnset:
-		panic("called String on CursorUnset")
+		return ""
 	case CursorPointer:
 		return "pointer"
 	case CursorMove:
