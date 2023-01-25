@@ -1336,6 +1336,11 @@ func reconcile(parent, old, new *Node, level int) (changes []*change, replaced b
 			replaced = true
 			return
 		}
+		if old.Data != new.Data { // for WebComponents (e.g., sl-button)
+			changes = replaces(parent, old, new, level)
+			replaced = true
+			return
+		}
 
 		// at this point, we have decided to mutate the node.
 		// i.e., the new node's underlying dom element is the same
