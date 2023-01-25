@@ -10,7 +10,7 @@ import (
 )
 
 // A Mounter attaches to a node in the DOM. Subsequent calls to
-// Mount will render the given web.Node into the DOM element Root.
+// Mount will render the given browser.Node into the DOM element Root.
 type Mounter struct {
 	// Root is the DOM element into which this Mounter renders.
 	//
