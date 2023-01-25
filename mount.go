@@ -55,7 +55,7 @@ func (m *Mounter) mount(n *Node) error {
 }
 
 func (m *Mounter) apply(c *change) {
-	log.Printf("%+v", c)
+	//log.Printf("%+v", c)
 	switch c.Type {
 	case insert:
 		//log.Print("insert")
