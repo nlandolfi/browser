@@ -12,25 +12,32 @@ import (
 // A Mounter attaches to a node in the DOM. Subsequent calls to
 // Mount will render the given web.Node into the DOM element Root.
 type Mounter struct {
-	// The document to which Root belongs
-	dom.Document
-
 	// Root is the DOM element into which this Mounter renders.
 	//
 	// This is often the document body, but need not be.
 	Root dom.Element
 
-	// The last mounted web node.
+	// Document is the document object. We only use CreateElement and CreateTextNode.
+	//
+	// This is often js.DefaultBrowser. See the js package herein.
+	Document dom.Document
+
+	// last is the Node last mounted, it is used to diff a new mount
+	// with the old, and decide on DOM changes. see `mount` below
 	last *Node
 }
 
+// Use Mount to mount the Node to the DOM element.
 func (m *Mounter) Mount(n *Node) error {
 	return m.mount(n)
 }
 
+// mount is a hidden helper; currently the indirection is not used, as the public
+// facing Mount simply calls this function; but we leave open the possibility for
+// an API change.
 func (m *Mounter) mount(n *Node) error {
 	if m.Root == nil || m.Document == nil {
-		panic("Mounter requires Root and Document")
+		return fmt.Errorf("browser.Mount: Mounter requires non-nil Root and Document")
 	}
 
 	changes := reconcileWalker(m.Root, m.last, n)
