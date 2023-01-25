@@ -158,7 +158,7 @@ const (
 func (t FlexDirectionType) String() string {
 	switch t {
 	case FlexDirectionUnset:
-		panic("called String on FlexDirectionUnset")
+		return ""
 	case FlexDirectionRow:
 		return "row"
 	case FlexDirectionColumn:
@@ -182,8 +182,7 @@ const (
 func (t FlexWrapType) String() string {
 	switch t {
 	case FlexWrapUnset:
-		//panic("called String on FlexWrapUnset")
-		return "unset"
+		return ""
 	case FlexWrapWrap:
 		return "wrap"
 	}
@@ -260,7 +259,8 @@ func (t JustifyContentType) String() string {
 		//panic("called String on JustifyContentUnset")
 		//		log.Print("need to fix JustifyContentUnset weirdness")
 		// TODO this does not make sense to me - NCL -2/3/2022
-		return "unset"
+		//return "unset" // hopefully changing this to empty string doesn't break everything
+		return ""
 	case JustifyContentCenter:
 		return "center"
 	case JustifyContentSpaceBetween:
@@ -312,7 +312,7 @@ func (t OverflowType) String() string {
 	switch t {
 	case OverflowUnset:
 		//panic("called String on OverflowUnset")
-		return "unset"
+		return ""
 	case OverflowHidden:
 		return "hidden"
 	case OverflowScroll:
@@ -335,7 +335,7 @@ const (
 func (t PositionType) String() string {
 	switch t {
 	case PositionUnset:
-		panic("called String on PositionUnset")
+		return ""
 	case PositionRelative:
 		return "relative"
 	case PositionAbsolute:
@@ -406,6 +406,8 @@ const (
 
 func (t OutlineType) String() string {
 	switch t {
+	case OutlineUnset:
+		return ""
 	case OutlineNone:
 		return "none"
 	case OutlineSolid:
