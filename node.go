@@ -133,7 +133,7 @@ const (
 func (t DisplayType) String() string {
 	switch t {
 	case DisplayUnset:
-		panic("called String on DisplayUnset")
+		return ""
 	case DisplayNone:
 		return "none"
 	case DisplayFlex:
@@ -358,7 +358,7 @@ const (
 func (t TextAlignType) String() string {
 	switch t {
 	case TextAlignUnset:
-		panic("called String on TextAlignUnset")
+		return ""
 	case TextAlignCenter:
 		return "center"
 	case TextAlignRight:
@@ -384,7 +384,7 @@ const (
 func (t TextDecorationType) String() string {
 	switch t {
 	case TextDecorationUnset:
-		panic("called String on TextDecorationUnset")
+		return ""
 	case TextDecorationLineThrough:
 		return "line-through"
 	case TextDecorationOverline:
