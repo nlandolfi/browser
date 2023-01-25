@@ -1331,12 +1331,8 @@ func reconcile(parent, old, new *Node, level int) (changes []*change, replaced b
 
 	switch old.Type {
 	case html.ElementNode:
-		if old.DataAtom != new.DataAtom {
-			changes = replaces(parent, old, new, level)
-			replaced = true
-			return
-		}
-		if old.Data != new.Data { // for WebComponents (e.g., sl-button)
+		// The second check here is for custom components (i.e., WebComponents) (e.g., sl-button)
+		if (old.DataAtom != new.DataAtom) || (old.Data != new.Data) {
 			changes = replaces(parent, old, new, level)
 			replaced = true
 			return
