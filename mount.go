@@ -59,6 +59,8 @@ func (m *Mounter) apply(c *change) {
 	switch c.Type {
 	case insert:
 		log.Print("insert")
+		log.Printf("%+v", c.Parent)
+		log.Printf("%+v", c.Ref)
 		m.create(c.Ref)           // creates the DOM element
 		m.insert(c.Parent, c.Ref) // inserts it
 	case replace:
