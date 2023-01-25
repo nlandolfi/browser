@@ -61,7 +61,9 @@ func (m *Mounter) apply(c *change) {
 		log.Print("insert")
 		log.Printf("%+v", c.Parent)
 		log.Printf("%+v", c.Ref)
-		m.create(c.Ref)           // creates the DOM element
+		if c.Ref.rendered == nil { // who knows if this will break things?? - NCL 1/25/23
+			m.create(c.Ref) // creates the DOM element
+		}
 		m.insert(c.Parent, c.Ref) // inserts it
 	case replace:
 		log.Print("replace")
