@@ -19,7 +19,7 @@ type LocalStorage interface {
 
 type Event interface{}
 
-var Events = make(chan Event) // why 10?
+var Events = make(chan Event)
 
 // call like:
 // go browser.Dispatch(e)
