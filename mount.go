@@ -55,6 +55,7 @@ func (m *Mounter) mount(n *Node) error {
 }
 
 func (m *Mounter) apply(c *change) {
+	log.Printf("%+v", c)
 	switch c.Type {
 	case insert:
 		log.Print("insert")
@@ -87,7 +88,6 @@ func (m *Mounter) create(ref *Node) {
 	if ref == nil {
 		panic("creating a nil ref!")
 	}
-
 	if ref.rendered != nil {
 		panic("calling create on already rendered *Node")
 	}
@@ -113,10 +113,10 @@ func (m *Mounter) create(ref *Node) {
 // insert calls into JS to add a node as a child to `into`
 func (m *Mounter) insert(into, ref *Node) {
 	if into.rendered == nil {
-		panic("insterting into an unrendered node")
+		panic("Mounter.insert: inserting into an unrendered node")
 	}
 	if into.Type != html.ElementNode {
-		panic("inserting into something that isn't an element node!")
+		panic("Mounter.insert: inserting into non-element-node")
 	}
 
 	into.rendered.AppendChild(ref.rendered)
