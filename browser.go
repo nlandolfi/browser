@@ -20,7 +20,7 @@ type LocalStorage interface {
 // Events is the global events channel.
 var Events = make(chan Event)
 
-// Event is a generic helper typer for an event object.
+// Event is a helper type for events.
 //
 // Usually code type switches on these for handling.
 type Event interface{}
