@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/spinsrv/browser/dom"
+	"github.com/nlandolfi/browser/dom"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )
@@ -219,6 +219,8 @@ func (m *Mounter) listenerAdd(r *Node, t dom.EventType, l dom.EventHandler) {
 		r.Handlers.click = el
 	case dom.DoubleClick:
 		r.Handlers.doubleClick = el
+	case dom.Drag:
+		r.Handlers.drag = el
 	case dom.MouseOver:
 		r.Handlers.mouseOver = el
 	case dom.MouseOut:
@@ -487,6 +489,14 @@ func getDoubleClick(n *Node) dom.EventHandler {
 	return n.Handlers.DoubleClick
 }
 
+func getDrag(n *Node) dom.EventHandler {
+	if n == nil {
+		return nil
+	}
+
+	return n.Handlers.Drag
+}
+
 func getMouseOver(n *Node) dom.EventHandler {
 	if n == nil {
 		return nil
@@ -671,7 +681,7 @@ func reconcileHandlers(old, new *Node) (changes []*change) {
 		} else {
 
 			if old.Handlers.doubleClick == nil {
-				panic("listener has Click but no underlying event listener")
+				panic("listener has DoubleClick but no underlying event listener")
 			}
 			changes = append(changes, &change{
 				Type:        listenerDelete,
@@ -684,6 +694,56 @@ func reconcileHandlers(old, new *Node) (changes []*change) {
 				Ref:         new,
 				EventType:   dom.DoubleClick,
 				NewListener: new.Handlers.DoubleClick,
+			})
+		}
+	}
+
+	oldDrag, newDrag := getDrag(old), getDrag(new)
+	if oldDrag == nil && newDrag == nil {
+		// no op
+	}
+	if oldDrag != nil && newDrag == nil {
+		if old.Handlers.drag == nil {
+			panic("listener has Drag but no underlying event listener")
+		}
+
+		changes = append(changes, &change{
+			Type:        listenerDelete,
+			Ref:         old,
+			EventType:   dom.Drag,
+			OldListener: old.Handlers.drag,
+		})
+	}
+	if oldDrag == nil && newDrag != nil {
+		changes = append(changes, &change{
+			Type:        listenerAdd,
+			Ref:         new,
+			EventType:   dom.Drag,
+			NewListener: new.Handlers.Drag,
+		})
+	}
+	if oldDrag != nil && newDrag != nil && &oldDrag != &newDrag {
+		// last attempt, check the cache
+		if cacheListeners && new.Handlers.DragCacheKey != "" && old.Handlers.DragCacheKey != "" && new.Handlers.DragCacheKey == old.Handlers.DragCacheKey {
+			// no need to syscall listener adding!
+			new.Handlers.Drag = old.Handlers.Drag // not sure if we need to move this
+			new.Handlers.drag = old.Handlers.drag // definitely need to move this, was a bug
+		} else {
+
+			if old.Handlers.drag == nil {
+				panic("listener has Drag but no underlying event listener")
+			}
+			changes = append(changes, &change{
+				Type:        listenerDelete,
+				Ref:         old,
+				EventType:   dom.Drag,
+				OldListener: old.Handlers.drag,
+			})
+			changes = append(changes, &change{
+				Type:        listenerAdd,
+				Ref:         new,
+				EventType:   dom.Drag,
+				NewListener: new.Handlers.Drag,
 			})
 		}
 	}

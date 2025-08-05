@@ -6,7 +6,7 @@ import (
 	"sync"
 	"syscall/js"
 
-	"github.com/spinsrv/browser"
+	"github.com/nlandolfi/browser"
 )
 
 var (

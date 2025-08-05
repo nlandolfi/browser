@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/spinsrv/browser/dom"
+	"github.com/nlandolfi/browser/dom"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )
@@ -104,8 +104,11 @@ type CursorType int
 
 const (
 	CursorUnset CursorType = iota
+	CursorDefault
 	CursorPointer
 	CursorMove
+	CursorNWSEResize
+	CursorEWResize
 )
 
 func (t CursorType) String() string {
@@ -116,6 +119,12 @@ func (t CursorType) String() string {
 		return "pointer"
 	case CursorMove:
 		return "move"
+	case CursorDefault:
+		return "default"
+	case CursorNWSEResize:
+		return "nwse-resize"
+	case CursorEWResize:
+		return "ew-resize"
 	}
 
 	panic(fmt.Sprintf("unknown CursorType: %#v", t))
@@ -483,6 +492,9 @@ type Style struct {
 	TextAlign       TextAlignType
 	TextDecoration  TextDecorationType
 	Top             Size
+	Transform       string
+	Transition      string
+	UserSelect      string
 	Width           Size
 }
 
@@ -535,7 +547,7 @@ func (s *Style) Val() string {
 	}
 
 	if !s.BoxShadow.IsZero() {
-		fmt.Fprintf(w, "box-shodow:%s;", &s.BoxShadow)
+		fmt.Fprintf(w, "box-shadow:%s;", &s.BoxShadow)
 	}
 
 	if s.Color != "" {
@@ -682,6 +694,21 @@ func (s *Style) Val() string {
 		fmt.Fprintf(w, "top:%s;", &s.Top)
 	}
 
+	if s.Transform != "" {
+		fmt.Fprintf(w, "transform:%s;", s.Transform)
+	}
+
+	if s.Transition != "" {
+		fmt.Fprintf(w, "transition:%s;", s.Transition)
+	}
+
+	if s.UserSelect != "" {
+		fmt.Fprintf(w, "user-select:%s;", s.UserSelect)
+		fmt.Fprintf(w, "-webkit-user-select:%s;", s.UserSelect)
+		fmt.Fprintf(w, "-moz-user-select:%s;", s.UserSelect)
+		fmt.Fprintf(w, "-ms-user-select:%s;", s.UserSelect)
+	}
+
 	if !s.Width.IsZero() {
 		fmt.Fprintf(w, "width:%s;", &s.Width)
 	}
@@ -693,20 +720,24 @@ func (s *Style) Val() string {
 
 // Style Helpers (e.g., WidthPX, BorderRadiusPX) {{{
 
-func (n *Node) AlignItems(s AlignItemsType) *Node         { n.Style.AlignItems = s; return n }
-func (n *Node) AlignItemsCenter() *Node                   { return n.AlignItems(AlignItemsCenter) }
-func (n *Node) Background(s string) *Node                 { n.Style.Background = s; return n }
-func (n *Node) BackgroundColor(s string) *Node            { n.Style.BackgroundColor = s; return n }
-func (n *Node) Border(b Border) *Node                     { n.Style.Border = b; return n }
-func (n *Node) BorderBottom(b Border) *Node               { n.Style.BorderBottom = b; return n }
-func (n *Node) BorderLeft(b Border) *Node                 { n.Style.BorderLeft = b; return n }
-func (n *Node) BorderRadius(s Size) *Node                 { n.Style.BorderRadius = s; return n }
-func (n *Node) BorderRadiusPX(s float64) *Node            { return n.BorderRadius(Size{Value: s, Unit: UnitPX}) }
-func (n *Node) BorderRight(b Border) *Node                { n.Style.BorderRight = b; return n }
-func (n *Node) BorderTop(b Border) *Node                  { n.Style.BorderTop = b; return n }
-func (n *Node) BoxShadow(b BoxShadow) *Node               { n.Style.BoxShadow = b; return n }
-func (n *Node) Color(s string) *Node                      { n.Style.Color = s; return n }
-func (n *Node) FlexBasis(s string) *Node                  { n.Style.FlexBasis = s; return n }
+func (n *Node) AlignItems(s AlignItemsType) *Node { n.Style.AlignItems = s; return n }
+func (n *Node) AlignItemsCenter() *Node           { return n.AlignItems(AlignItemsCenter) }
+func (n *Node) Background(s string) *Node         { n.Style.Background = s; return n }
+func (n *Node) BackgroundColor(s string) *Node    { n.Style.BackgroundColor = s; return n }
+func (n *Node) Border(b Border) *Node             { n.Style.Border = b; return n }
+func (n *Node) BorderBottom(b Border) *Node       { n.Style.BorderBottom = b; return n }
+func (n *Node) BorderLeft(b Border) *Node         { n.Style.BorderLeft = b; return n }
+func (n *Node) BorderRadius(s Size) *Node         { n.Style.BorderRadius = s; return n }
+func (n *Node) BorderRadiusPX(s float64) *Node    { return n.BorderRadius(Size{Value: s, Unit: UnitPX}) }
+func (n *Node) BorderRight(b Border) *Node        { n.Style.BorderRight = b; return n }
+func (n *Node) BorderTop(b Border) *Node          { n.Style.BorderTop = b; return n }
+func (n *Node) BoxShadow(b BoxShadow) *Node       { n.Style.BoxShadow = b; return n }
+func (n *Node) Color(s string) *Node              { n.Style.Color = s; return n }
+func (n *Node) Display(t DisplayType) *Node       { n.Style.Display = t; return n }
+func (n *Node) FlexBasis(s string) *Node          { n.Style.FlexBasis = s; return n }
+func (n *Node) FlexCenter() *Node {
+	return n.Display(DisplayFlex).JustifyContentCenter().AlignItemsCenter()
+}
 func (n *Node) FlexDirection(s FlexDirectionType) *Node   { n.Style.FlexDirection = s; return n }
 func (n *Node) FlexGrow(s string) *Node                   { n.Style.FlexGrow = s; return n }
 func (n *Node) FlexShrink(s string) *Node                 { n.Style.FlexShrink = s; return n }
@@ -785,8 +816,11 @@ func (n *Node) TextDecorationUnderline() *Node {
 }
 func (n *Node) Top(s Size) *Node { n.Style.Top = s; return n }
 
-func (n *Node) TopPX(s float64) *Node  { return n.Top(Size{Value: s, Unit: UnitPX}) }
-func (n *Node) LeftPX(s float64) *Node { return n.Left(Size{Value: s, Unit: UnitPX}) }
+func (n *Node) TopPX(s float64) *Node     { return n.Top(Size{Value: s, Unit: UnitPX}) }
+func (n *Node) Transform(s string) *Node  { n.Style.Transform = s; return n }
+func (n *Node) Transition(s string) *Node { n.Style.Transition = s; return n }
+func (n *Node) UserSelect(s string) *Node { n.Style.UserSelect = s; return n }
+func (n *Node) LeftPX(s float64) *Node    { return n.Left(Size{Value: s, Unit: UnitPX}) }
 
 func (n *Node) OnlyIf(b bool, f func(n *Node) *Node) *Node {
 	if b {
@@ -812,6 +846,42 @@ func (n *Node) ID(id string) *Node {
 		&html.Attribute{
 			Key: atom.Id.String(),
 			Val: id,
+		},
+	)
+
+	return n
+}
+
+func (n *Node) Draggable() *Node {
+	for _, a := range n.Attr {
+		if a.Key == atom.Draggable.String() {
+			a.Val = "true"
+			return n
+		}
+	}
+
+	n.Attr = append(n.Attr,
+		&html.Attribute{
+			Key: atom.Draggable.String(),
+			Val: "true",
+		},
+	)
+
+	return n
+}
+
+func (n *Node) NotDraggable() *Node {
+	for _, a := range n.Attr {
+		if a.Key == atom.Draggable.String() {
+			a.Val = "false"
+			return n
+		}
+	}
+
+	n.Attr = append(n.Attr,
+		&html.Attribute{
+			Key: atom.Draggable.String(),
+			Val: "false",
 		},
 	)
 
@@ -937,6 +1007,7 @@ func (n *Node) AddAttr(a *html.Attribute) *Node { n.Attr = append(n.Attr, a); re
 type Handlers struct {
 	Click       dom.EventHandler `json:"-"`
 	DoubleClick dom.EventHandler `json:"-"`
+	Drag        dom.EventHandler `json:"="`
 	Input       dom.EventHandler `json:"-"`
 	MouseOut    dom.EventHandler `json:"-"`
 	MouseOver   dom.EventHandler `json:"-"`
@@ -951,6 +1022,7 @@ type Handlers struct {
 	DragOver    dom.EventHandler `json:"-"`
 
 	ClickCacheKey       string
+	DragCacheKey        string
 	DoubleClickCacheKey string
 	InputCacheKey       string
 	MouseOverCacheKey   string
@@ -965,7 +1037,7 @@ type Handlers struct {
 	DropCacheKey        string
 	DragOverCacheKey    string
 
-	click, doubleClick, input, mouseOut, mouseOver, mouseDown, mouseUp, mouseMove, mouseEnter, mouseLeave, keyUp, keyDown, drop, dragOver dom.EventListener
+	click, drag, doubleClick, input, mouseOut, mouseOver, mouseDown, mouseUp, mouseMove, mouseEnter, mouseLeave, keyUp, keyDown, drop, dragOver dom.EventListener
 }
 
 // }}}
@@ -991,6 +1063,20 @@ func (n *Node) OnClick(f dom.EventHandler) *Node {
 func (n *Node) OnClickKeyCache(s string) *Node {
 	n.Handlers.ClickCacheKey = s
 	return n
+}
+
+func (n *Node) OnDrag(f dom.EventHandler) *Node {
+	n.Handlers.Drag = f
+	return n
+}
+
+func (n *Node) OnDragKeyCache(s string) *Node {
+	n.Handlers.DragCacheKey = s
+	return n
+}
+
+func (n *Node) OnDragDispatch(e Event) *Node {
+	return n.OnDrag(func(_ dom.Event) { go Dispatch(e) })
 }
 
 func (n *Node) OnMouseOver(f dom.EventHandler) *Node {
@@ -1055,6 +1141,10 @@ func (n *Node) OnMouseDownCached(k string, f dom.EventHandler) *Node {
 	return n.OnMouseDown(f)
 }
 
+func (n *Node) OnMouseDownDispatch(e Event) *Node {
+	return n.OnMouseDown(func(_ dom.Event) { go Dispatch(e) })
+}
+
 func (n *Node) OnMouseUp(f dom.EventHandler) *Node {
 	n.Handlers.MouseUp = f
 	return n
@@ -1065,6 +1155,10 @@ func (n *Node) OnMouseUpCached(k string, f dom.EventHandler) *Node {
 	return n.OnMouseUp(f)
 }
 
+func (n *Node) OnMouseUpDispatch(e Event) *Node {
+	return n.OnMouseUp(func(_ dom.Event) { go Dispatch(e) })
+}
+
 func (n *Node) OnMouseMove(f dom.EventHandler) *Node {
 	n.Handlers.MouseMove = f
 	return n
@@ -1073,6 +1167,10 @@ func (n *Node) OnMouseMove(f dom.EventHandler) *Node {
 func (n *Node) OnMouseMoveCached(k string, f dom.EventHandler) *Node {
 	n.Handlers.MouseMoveCacheKey = k
 	return n.OnMouseMove(f)
+}
+
+func (n *Node) OnMouseMoveDispatch(e Event) *Node {
+	return n.OnMouseMove(func(_ dom.Event) { go Dispatch(e) })
 }
 
 func (n *Node) OnClickDispatch(e Event) *Node {

@@ -9,8 +9,8 @@ import (
 
 	"syscall/js"
 
-	"github.com/spinsrv/browser"
-	"github.com/spinsrv/browser/dom"
+	"github.com/nlandolfi/browser"
+	"github.com/nlandolfi/browser/dom"
 )
 
 var (
@@ -320,6 +320,22 @@ func (e *event) DataTransfer() dom.DataTransfer {
 
 func (e *event) Target() dom.Element {
 	return &element{underlying: e.underlying.Get("target")}
+}
+
+func (e *event) OffsetX() int {
+	return e.underlying.Get("clientX").Int()
+}
+
+func (e *event) OffsetY() int {
+	return e.underlying.Get("clientY").Int()
+}
+
+func (e *event) PageX() int {
+	return e.underlying.Get("pageX").Int()
+}
+
+func (e *event) PageY() int {
+	return e.underlying.Get("pageY").Int()
 }
 
 func (e *event) ClientX() int {

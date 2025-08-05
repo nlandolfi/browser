@@ -8,10 +8,10 @@ import (
 	"log"
 	"time"
 
-	"github.com/spinsrv/browser"
-	"github.com/spinsrv/browser/example/components/app"
-	"github.com/spinsrv/browser/js"
-	"github.com/spinsrv/browser/ui"
+	"github.com/nlandolfi/browser"
+	"github.com/nlandolfi/browser/example/components/app"
+	"github.com/nlandolfi/browser/js"
+	"github.com/nlandolfi/browser/ui"
 )
 
 const ClientVersion = "0.0.0"

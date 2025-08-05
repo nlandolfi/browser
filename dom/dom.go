@@ -51,6 +51,10 @@ type Selection interface {
 
 type Event interface {
 	Target() Element
+	OffsetX() int
+	OffsetY() int
+	PageX() int
+	PageY() int
 	ClientX() int
 	ClientY() int
 	MovementX() int
@@ -146,6 +150,7 @@ type EventType string
 const (
 	Click       EventType = "click"
 	DoubleClick           = "dblclick"
+	Drag                  = "drag"
 	Input                 = "input"
 	MouseDown             = "mousedown"
 	MouseMove             = "mousemove"
