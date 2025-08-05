@@ -1007,7 +1007,7 @@ func (n *Node) AddAttr(a *html.Attribute) *Node { n.Attr = append(n.Attr, a); re
 type Handlers struct {
 	Click       dom.EventHandler `json:"-"`
 	DoubleClick dom.EventHandler `json:"-"`
-	Drag        dom.EventHandler `json:"="`
+	Drag        dom.EventHandler `json:"-"`
 	Input       dom.EventHandler `json:"-"`
 	MouseOut    dom.EventHandler `json:"-"`
 	MouseOver   dom.EventHandler `json:"-"`
