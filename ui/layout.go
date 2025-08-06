@@ -1,7 +1,7 @@
 package ui
 
 import (
-	"github.com/spinsrv/browser"
+	"github.com/nlandolfi/browser"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )

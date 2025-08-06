@@ -4,10 +4,11 @@ package sl
 
 import (
 	"fmt"
+	"log"
 	"time"
 
-	"github.com/spinsrv/browser"
-	"github.com/spinsrv/browser/dom"
+	"github.com/nlandolfi/browser"
+	"github.com/nlandolfi/browser/dom"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )
@@ -209,6 +210,36 @@ func Card(a *CardAttr, children ...*browser.Node) *browser.Node {
 	return &browser.Node{
 		Type:     html.ElementNode,
 		Data:     "sl-card",
+		Children: children,
+		Attr:     a.Attr(),
+	}
+}
+
+// }}}
+
+// Checkbox {{{
+
+type CheckboxAttr struct {
+	Checked bool
+}
+
+func (a *CheckboxAttr) Attr() (out []*html.Attribute) {
+	if a == nil {
+		return
+	}
+
+	if a.Checked {
+		log.Print("thing is checked")
+		out = append(out, &html.Attribute{Key: "checked", Val: "true"})
+	}
+
+	return
+}
+
+func Checkbox(a *CheckboxAttr, children ...*browser.Node) *browser.Node {
+	return &browser.Node{
+		Type:     html.ElementNode,
+		Data:     "sl-checkbox",
 		Children: children,
 		Attr:     a.Attr(),
 	}

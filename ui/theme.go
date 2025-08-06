@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/spinsrv/browser"
-	"github.com/spinsrv/browser/dom"
+	"github.com/nlandolfi/browser"
+	"github.com/nlandolfi/browser/dom"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )
@@ -35,6 +35,44 @@ type Theme struct {
 	HoverBackgroundColor string
 	TextColor            string
 	LinkColor            string
+}
+
+// FirstDiff describes the first difference between the themes.
+// It returns "" if no difference is found.
+// It does NOT check that the themse are well-formed.
+func (a *Theme) FirstDiff(b *Theme) string {
+	if a == nil && b == nil {
+		return ""
+	}
+	if b == nil && a != nil {
+		return "LHS: not nil"
+	}
+	if a == nil && b != nil {
+		return "RHS: not nil"
+	}
+
+	if a.FontFamily != b.FontFamily {
+		return fmt.Sprintf("FontFamily: %q != %q", a.FontFamily, b.FontFamily)
+	}
+	if a.BackgroundColor != b.BackgroundColor {
+		return fmt.Sprintf("BackgroundColor: %q != %q", a.BackgroundColor, b.BackgroundColor)
+	}
+	if a.HoverBackgroundColor != b.HoverBackgroundColor {
+		return fmt.Sprintf("HoverBackgroundColor: %q != %q", a.HoverBackgroundColor, b.HoverBackgroundColor)
+	}
+	if a.TextColor != b.TextColor {
+		return fmt.Sprintf("TextColor: %q != %q", a.TextColor, b.TextColor)
+	}
+	if a.LinkColor != b.LinkColor {
+		return fmt.Sprintf("LinkColor: %q != %q", a.LinkColor, b.LinkColor)
+	}
+	return ""
+}
+
+// Equal determines if two themes have the same information.
+// It does NOT check that the themes are well-formed.
+func (a *Theme) Equal(b *Theme) bool {
+	return a.FirstDiff(b) == ""
 }
 
 var buttonBaseStyle = browser.Style{
@@ -234,6 +272,10 @@ func (t *Theme) PassInput(value *string) *browser.Node {
 	return t.TextInput(value).AttrType("password")
 }
 
+func PassInput(value *string) *browser.Node {
+	return DefaultTheme.TextInput(value).AttrType("password")
+}
+
 func TextNode(s string) *browser.Node {
 	return textNode(s)
 }
@@ -287,6 +329,10 @@ func (t *Theme) TextInput(value *string) *browser.Node {
 		panic("called TextInput on nil theme")
 	}
 	return textInput(value).Color(t.TextColor).Background(t.BackgroundColor).FontFamily(t.FontFamily)
+}
+
+func TextInput(value *string) *browser.Node {
+	return DefaultTheme.TextInput(value)
 }
 
 func (t *Theme) TimeInput(value *time.Time) *browser.Node {

@@ -4,8 +4,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/spinsrv/browser"
-	"github.com/spinsrv/browser/ui"
+	"github.com/nlandolfi/browser"
+	"github.com/nlandolfi/browser/ui"
 )
 
 type State struct {
@@ -17,7 +17,7 @@ type State struct {
 func View(s *State) *browser.Node {
 	return ui.VStack(
 		ui.HStack(
-			s.Theme.Text("Hello, spinsrv/browser!"),
+			s.Theme.Text("Hello, nlandolfi/browser!"),
 		).JustifyContentCenter(),
 	).HeightVH(100).WidthVW(100).JustifyContentCenter().Background(s.Theme.BackgroundColor)
 }
