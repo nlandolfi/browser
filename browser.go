@@ -2,8 +2,9 @@ package browser
 
 import (
 	"html/template"
+	"time"
 
-	"github.com/spinsrv/browser/dom"
+	"github.com/nlandolfi/browser/dom"
 )
 
 type Browser interface {
@@ -36,4 +37,17 @@ type Event interface{}
 //
 func Dispatch(e Event) {
 	Events <- e
+}
+
+func DispatchAfter(e Event, d time.Duration) {
+	time.Sleep(d)
+	Dispatch(e)
+}
+
+func DispatchAt(e Event, t time.Time) {
+	d := t.Sub(time.Now())
+	if d < 0 {
+		panic("can not dispatch in the past")
+	}
+	DispatchAfter(e, d)
 }
